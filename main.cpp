@@ -16,7 +16,16 @@ bool ishost=false;
 char *HOST;
 char PREFIX[]="Host: ";
 char *FOUND;
+//char *http_order[6]={"GET","POST","HEAD","PUT","DELETE","OPTIONS"};
 bool found_hostdotdot(unsigned char *buf,int size){
+	if(memcmp(buf,"GET",strlen("GET"))&&
+	memcmp(buf,"POST",strlen("POST"))&&
+	memcmp(buf,"HEAD",strlen("HEAD"))&&
+	memcmp(buf,"PUT",strlen("PUT"))&&
+	memcmp(buf,"DELETE",strlen("DELETE"))&&
+	memcmp(buf,"OPTIONS",strlen("OPTIONS"))
+	){return false;}
+		
 	int l=strlen(PREFIX);
 	for(int i=0;i<size;i++){
 		if(i+l>size)break;
@@ -38,10 +47,9 @@ void check_host(unsigned char* buf, int size) {
 		size-=IP->ip_hl*4;
 
 		struct tcphdr *TCP=(struct tcphdr *)buf;
-		
 		size-=TCP->doff*4;
 		buf+=TCP->doff*4;
-		
+
 		if(found_hostdotdot(buf,size)){
 			if(strcmp(HOST,FOUND)==0)
 				ishost=true;
